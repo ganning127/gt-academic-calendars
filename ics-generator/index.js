@@ -2,6 +2,7 @@ import ical, { ICalCalendarMethod } from 'ical-generator';
 import TSV from 'tsv';
 import momment from 'moment';
 import fs from 'fs';
+import path from 'path';
 
 const FALL_2024_TSV = "https://ro-blob.azureedge.net/ro-calendar-data/public/txt/202408.txt";
 const FALL_2024_NAME = "fall-2024.ics";
@@ -10,8 +11,8 @@ const SPRING_2025_NAME = "spring-2025.ics";
 
 const FILE_TSV = FALL_2024_TSV;
 const FILE_NAME = FALL_2024_NAME;
+const TAG = "fall2024";
 
-const calendar = ical();
 
 const addDays = (date, days) => {
   var result = new Date(date);
@@ -27,7 +28,8 @@ const getTsvFile = async () => {
 const valueIsBlank = (value) => {
   return value === 'null' || value === '';
 };
-const getIcsFile = (dataObject) => {
+const getIcsFile = (dataObject, type) => {
+  const calendar = ical();
 
   for (let i = 0; i < dataObject.length; i++) {
     const event = dataObject[i];
@@ -56,7 +58,7 @@ const getIcsFile = (dataObject) => {
 
     calendar.createEvent({
       start: startDate,
-      end: isAllDay ? addDays(endDate, 1) : endDate,
+      end: (type === 'gcal_outlook' && isAllDay) ? addDays(endDate, 1) : endDate,
       allDay: isAllDay,
       summary: event.Title,
       description: event.Body === 'null' ? '' : event.Body,
@@ -69,11 +71,40 @@ const getIcsFile = (dataObject) => {
   return calendar.toString();
 };
 
+const DEST_DIR = `../react-frontend/src/assets/${TAG}`;
+
+const makeDir = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
+};
+
 const main = async () => {
   const tsvData = await getTsvFile();
   const obj = TSV.parse(tsvData);
-  const ics = getIcsFile(obj);
-  fs.writeFileSync('../react-frontend/src/assets/' + FILE_NAME, ics);
+
+  const generators = [
+    {
+      "type": "webapp",
+    },
+    {
+      "type": "gcal_outlook",
+    }
+  ];
+
+  for (let i = 0; i < generators.length; i++) {
+    const gen = generators[i].type;
+    const ics = getIcsFile(obj, gen);
+
+    makeDir(DEST_DIR);
+
+
+
+    fs.writeFileSync(DEST_DIR + '/' + gen + FILE_NAME, ics);
+
+
+
+  }
 };
 
 main();
