@@ -8,8 +8,8 @@ const FALL_2024_NAME = "fall-2024.ics";
 const SPRING_2025_TSV = "https://ro-blob.azureedge.net/ro-calendar-data/public/txt/202502.txt";
 const SPRING_2025_NAME = "spring-2025.ics";
 
-const FILE_TSV = SPRING_2025_TSV;
-const FILE_NAME = SPRING_2025_NAME;
+const FILE_TSV = FALL_2024_TSV;
+const FILE_NAME = FALL_2024_NAME;
 
 const calendar = ical();
 
@@ -24,7 +24,9 @@ const getTsvFile = async () => {
   const data = await response.text();
   return data;
 };
-
+const valueIsBlank = (value) => {
+  return value === 'null' || value === '';
+};
 const getIcsFile = (dataObject) => {
 
   for (let i = 0; i < dataObject.length; i++) {
@@ -37,7 +39,8 @@ const getIcsFile = (dataObject) => {
     const startDate = momment(event.Date, 'MM/DD/YYYY').toDate();
     const endDate = momment(event.EndDate, 'MM/DD/YYYY').toDate();
 
-    const isAllDay = event.Time === 'null' && event.EndTime === 'null';
+    const isAllDay = valueIsBlank(event.Time) && valueIsBlank(event.EndTime);
+
     // Handle Time and EndTime
     if (event.Time && event.Time !== 'null') {
       const startTime = event.Time.split(':');
@@ -71,8 +74,6 @@ const main = async () => {
   const obj = TSV.parse(tsvData);
   const ics = getIcsFile(obj);
   fs.writeFileSync('../react-frontend/src/assets/' + FILE_NAME, ics);
-
-  console.log(ics);
 };
 
 main();
