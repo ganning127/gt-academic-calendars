@@ -1,0 +1,20 @@
+{
+  "name": "ics-generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "ical-generator": "^7.1.0",
+    "moment": "^2.30.1",
+    "tsv": "^0.2.0"
+  },
+  "type": "module"
+}
