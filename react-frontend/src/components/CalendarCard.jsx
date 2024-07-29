@@ -5,7 +5,7 @@ import {
   Button
 } from '@chakra-ui/react';
 
-export const CalendarCard = ({ title, link, embedSrc }) => {
+export const CalendarCard = ({ title, link, embedSrc, year, term }) => {
   return (
     <Stack fontSize="xl" p={4} rounded='md' border='1px solid #d3d3d3' spacing={4}>
       <Heading
@@ -15,11 +15,11 @@ export const CalendarCard = ({ title, link, embedSrc }) => {
         {title}
       </Heading>
       <Button colorScheme='yellow' onClick={() => window.open(link, '_blank')}>
-        Download {title} (ics)
+        Download {term} {year} (ics)
       </Button>
       <iframe src={embedSrc} style={{
         borderWidth: "0"
-      }} width="100%" height="400px" frameborder="0" scrolling="no"></iframe>
+      }} width="100%" height="400px" scrolling="no"></iframe>
     </Stack>
   );
 };
