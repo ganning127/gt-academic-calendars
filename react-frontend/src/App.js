@@ -5,8 +5,11 @@ import {
   Container,
   Heading, SimpleGrid
 } from '@chakra-ui/react';
-import Fall2024Ics from './assets/fall2024/webappfall-2024.ics';
-import Spring2025Ics from './assets/spring-2025.ics';
+import WebFall2024Ics from './assets/fall2024/webappfall-2024.ics';
+import GCalOutlookFall2024Ics from './assets/fall2024/gcal_outlookfall-2024.ics';
+import WebSpring2025Ics from './assets/spring2025/webappspring-2025.ics';
+import GCalOutlookSpring2025Ics from './assets/spring2025/gcal_outlookspring-2025.ics';
+
 import { CalendarCard } from './components/CalendarCard';
 
 const calendarsToRender = [
@@ -14,15 +17,15 @@ const calendarsToRender = [
     title: "Fall 2024 Academic Calendar",
     year: "2024",
     term: "Fall",
-    link: Fall2024Ics,
-    calId: "OWVmMmZiNTI3ODE1YzI1ZjNlNmE1NGRmODVmZTgxYjNmM2JhZjNmYWZlOThiZWYxNDdjNTJmODM3ZjNiMjNjN0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t"
+    webAppLink: WebFall2024Ics,
+    gCalOutlookLink: GCalOutlookFall2024Ics,
   },
   {
     title: "Spring 2025 Academic Calendar",
     year: "2025",
     term: "Spring",
-    link: Spring2025Ics,
-    calId: "N2VlNWI2ZWY2ODYzZGIwNzg4ZGUxNTFjNjY4NDRlN2UyZTg5MDNiMjNjYmE2MDcwMjg5ZTIyYjNkNDE0N2Q3Y0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t"
+    webAppLink: WebSpring2025Ics,
+    gCalOutlookLink: GCalOutlookSpring2025Ics,
   }
 ];
 
@@ -43,10 +46,10 @@ function App() {
               <CalendarCard
                 title={calendar.title}
                 key={calendar.title}
-                link={calendar.link}
+                webAppLink={calendar.webAppLink}
+                gCalOutlookLink={calendar.gCalOutlookLink}
                 year={calendar.year}
                 term={calendar.term}
-                embedSrc={`https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=America%2FNew_York&bgcolor=%23ffffff&showTitle=1&showPrint=0&showCalendars=0&src=${calendar.calId}&color=%237CB342`}
               />
             ))
           }

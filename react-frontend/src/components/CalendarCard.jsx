@@ -16,7 +16,7 @@ import { createRef, useEffect, useState } from 'react';
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 
 
-export const CalendarCard = ({ title, link, embedSrc, year, term }) => {
+export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term }) => {
   const [initialEvents, setInitialEvents] = useState([]);
   const [dateRange, setDateRange] = useState('');
   const [calView, setCalView] = useState('month');
@@ -29,6 +29,8 @@ export const CalendarCard = ({ title, link, embedSrc, year, term }) => {
     const calendarInstance = ref.current.getInstance();
     const range = calendarInstance.getDateRangeStart();
     const rangeEnd = calendarInstance.getDateRangeEnd();
+
+    console.log("calendarInstance", calendarInstance);
 
     // format as MM/DD/YYYY
     const formattedRange = `${range.getMonth() + 1}/${range.getDate()}/${range.getFullYear()} - ${rangeEnd.getMonth() + 1}/${rangeEnd.getDate()}/${rangeEnd.getFullYear()}`;
@@ -47,7 +49,7 @@ export const CalendarCard = ({ title, link, embedSrc, year, term }) => {
   }, [calView]);
 
   useEffect(() => {
-    fetch(link)
+    fetch(webAppLink)
       .then(r => r.text())
       .then(text => {
         const parsed = ical.parseString(text);
@@ -85,7 +87,7 @@ export const CalendarCard = ({ title, link, embedSrc, year, term }) => {
         >
           {title}
         </Heading>
-        <Button colorScheme='yellow' onClick={() => window.open(link, '_blank')}>
+        <Button colorScheme='yellow' onClick={() => window.open(gCalOutlookLink, '_blank')}>
           Download {term} {year} (ics)
         </Button>
       </Flex>

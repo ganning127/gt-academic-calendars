@@ -9,9 +9,9 @@ const FALL_2024_NAME = "fall-2024.ics";
 const SPRING_2025_TSV = "https://ro-blob.azureedge.net/ro-calendar-data/public/txt/202502.txt";
 const SPRING_2025_NAME = "spring-2025.ics";
 
-const FILE_TSV = FALL_2024_TSV;
-const FILE_NAME = FALL_2024_NAME;
-const TAG = "fall2024";
+const FILE_TSV = SPRING_2025_TSV;
+const FILE_NAME = SPRING_2025_NAME;
+const TAG = "spring2025";
 
 
 const addDays = (date, days) => {
