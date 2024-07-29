@@ -1,21 +1,10 @@
 import React from 'react';
 import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
+  ChakraProvider, Text,
+  Link, theme,
   Container,
-  Heading,
-  Stack,
-  Button,
-  SimpleGrid,
+  Heading, SimpleGrid
 } from '@chakra-ui/react';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Logo } from './Logo';
 import Fall2024Ics from './assets/fall-2024.ics';
 import Spring2025Ics from './assets/spring-2025.ics';
 import { CalendarCard } from './components/CalendarCard';
@@ -28,8 +17,8 @@ function App() {
         <Heading>
           Georgia Tech Academic Calendars
         </Heading>
-        <Text fontSize='md' mt={2} mb={4}>All data is pulled from <Link color='yellow.600' href="https://registrar.gatech.edu/calendar/">https://registrar.gatech.edu/calendar</Link>.
-          All source code is available at <Link color='yellow.600' href="">here</Link>.
+        <Text fontSize='md' mt={2} mb={4}>All data is pulled from the <Link color='yellow.600' href="https://registrar.gatech.edu/calendar/">registrar&apos;s academic calendar</Link>.
+          All source code is available <Link color='yellow.600' href="https://github.com/ganning127/gt-academic-calendars">on my GitHub</Link>.
         </Text>
 
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>

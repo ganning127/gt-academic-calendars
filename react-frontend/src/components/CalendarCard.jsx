@@ -1,18 +1,8 @@
 
 import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-  Container,
   Heading,
   Stack,
-  Button,
-  SimpleGrid,
+  Button
 } from '@chakra-ui/react';
 
 export const CalendarCard = ({ title, link, embedSrc }) => {
