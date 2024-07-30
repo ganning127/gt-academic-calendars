@@ -4,15 +4,34 @@ import momment from 'moment';
 import fs from 'fs';
 import path from 'path';
 
-const FALL_2024_TSV = "https://ro-blob.azureedge.net/ro-calendar-data/public/txt/202408.txt";
-const FALL_2024_NAME = "fall-2024.ics";
-const SPRING_2025_TSV = "https://ro-blob.azureedge.net/ro-calendar-data/public/txt/202502.txt";
-const SPRING_2025_NAME = "spring-2025.ics";
+const data = {
+  "fall2024": {
+    "tsv": "https://ro-blob.azureedge.net/ro-calendar-data/public/txt/202408.txt",
+    "name": "fall-2024.ics"
+  },
+  "spring2025": {
+    "tsv": "https://ro-blob.azureedge.net/ro-calendar-data/public/txt/202502.txt",
+    "name": "spring-2025.ics"
+  }
+};
 
-const FILE_TSV = SPRING_2025_TSV;
-const FILE_NAME = SPRING_2025_NAME;
-const TAG = "spring2025";
+const toGenerateKey = "spring2025";
+const FILE_TSV = data[toGenerateKey].tsv;
+const FILE_NAME = data[toGenerateKey].name;
+const DEST_DIR = `../react-frontend/src/assets/${toGenerateKey}`;
 
+const WEBAPP_TAG = "webapp";
+const GCAL_OUTLOOK_TAG = "calendar";
+
+
+const GENERATE_KEYS = [
+  {
+    "type": WEBAPP_TAG,
+  },
+  {
+    "type": GCAL_OUTLOOK_TAG,
+  }
+];
 
 const addDays = (date, days) => {
   var result = new Date(date);
@@ -25,11 +44,19 @@ const getTsvFile = async () => {
   const data = await response.text();
   return data;
 };
+
 const valueIsBlank = (value) => {
-  return value === 'null' || value === '';
+  return !value || value === 'null' || value === '';
 };
+
+const makeDir = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
+};
+
 const getIcsFile = (dataObject, type) => {
-  const calendar = ical();
+  const calendar = ical(); // init inside function to avoid reusing the same object
 
   for (let i = 0; i < dataObject.length; i++) {
     const event = dataObject[i];
@@ -38,72 +65,50 @@ const getIcsFile = (dataObject, type) => {
       continue;
     }
 
-    const startDate = momment(event.Date, 'MM/DD/YYYY').toDate();
-    const endDate = momment(event.EndDate, 'MM/DD/YYYY').toDate();
+    let startDate = momment(event.Date, 'MM/DD/YYYY').toDate();
+    let endDate = momment(event.EndDate, 'MM/DD/YYYY').toDate();
+    let isAllDay = valueIsBlank(event.Time) && valueIsBlank(event.EndTime);
 
-    const isAllDay = valueIsBlank(event.Time) && valueIsBlank(event.EndTime);
-
-    // Handle Time and EndTime
-    if (event.Time && event.Time !== 'null') {
+    if (!valueIsBlank(event.Time)) {
       const startTime = event.Time.split(':');
       startDate.setHours(startTime[0]);
       startDate.setMinutes(startTime[1]);
     }
-    if (event.EndTime && event.EndTime !== 'null') {
+    if (!valueIsBlank(event.EndTime)) {
       const endTime = event.EndTime.split(':');
       endDate.setHours(endTime[0]);
       endDate.setMinutes(endTime[1]);
     }
 
+    if (type === GCAL_OUTLOOK_TAG && isAllDay) {
+      endDate = addDays(endDate, 1);
+    }
 
     calendar.createEvent({
       start: startDate,
-      end: (type === 'gcal_outlook' && isAllDay) ? addDays(endDate, 1) : endDate,
+      end: endDate,
       allDay: isAllDay,
       summary: event.Title,
-      description: event.Body === 'null' ? '' : event.Body,
-      location: event.EventLocation === 'null' ? '' : event.EventLocation,
-      url: event.Link === 'null' ? '' : event.Link,
-      method: ICalCalendarMethod.PUBLISH
+      description: !valueIsBlank(event.Description) ? event.Description : '',
+      location: !valueIsBlank(event.Location) ? event.Location : '',
+      url: !valueIsBlank(event.Link) ? event.Link : '',
+      method: ICalCalendarMethod.PUBLISH,
     });
   }
 
   return calendar.toString();
 };
 
-const DEST_DIR = `../react-frontend/src/assets/${TAG}`;
-
-const makeDir = (dir) => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
-  }
-};
-
 const main = async () => {
   const tsvData = await getTsvFile();
   const obj = TSV.parse(tsvData);
 
-  const generators = [
-    {
-      "type": "webapp",
-    },
-    {
-      "type": "gcal_outlook",
-    }
-  ];
-
-  for (let i = 0; i < generators.length; i++) {
-    const gen = generators[i].type;
+  for (let i = 0; i < GENERATE_KEYS.length; i++) {
+    const gen = GENERATE_KEYS[i].type;
     const ics = getIcsFile(obj, gen);
 
     makeDir(DEST_DIR);
-
-
-
-    fs.writeFileSync(DEST_DIR + '/' + gen + FILE_NAME, ics);
-
-
-
+    fs.writeFileSync(path.join(DEST_DIR, gen + '-' + FILE_NAME), ics);
   }
 };
 

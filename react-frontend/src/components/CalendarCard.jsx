@@ -14,7 +14,7 @@ import '@toast-ui/calendar/dist/toastui-calendar.min.css';
 import ical from "cal-parser";
 import { createRef, useEffect, useState } from 'react';
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
-
+import moment from 'moment-timezone';
 
 export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term }) => {
   const [initialEvents, setInitialEvents] = useState([]);
@@ -29,10 +29,6 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
     const calendarInstance = ref.current.getInstance();
     const range = calendarInstance.getDateRangeStart();
     const rangeEnd = calendarInstance.getDateRangeEnd();
-
-    console.log("calendarInstance", calendarInstance);
-
-    // format as MM/DD/YYYY
     const formattedRange = `${range.getMonth() + 1}/${range.getDate()}/${range.getFullYear()} - ${rangeEnd.getMonth() + 1}/${rangeEnd.getDate()}/${rangeEnd.getFullYear()}`;
 
 
@@ -40,7 +36,6 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
   };
 
   useEffect(() => {
-    console.log("calView", calView);
     if (ref?.current) {
       const calendarInstance = ref?.current.getInstance();
       calendarInstance.changeView(calView, true);
@@ -49,21 +44,27 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
   }, [calView]);
 
   useEffect(() => {
+    console.log(webAppLink);
     fetch(webAppLink)
       .then(r => r.text())
       .then(text => {
         const parsed = ical.parseString(text);
+        console.log(parsed);
 
         let events = [];
 
         for (let i = 0; i < parsed.events.length; i++) {
           const event = parsed.events[i];
           const isAllDay = event["x-microsoft-cdo-alldayevent"]?.value === "TRUE" || event["x-microsoft-msncalendar-alldayevent"]?.value === "TRUE";
+
+          let start = event.dtstart.value;
+
+          let end = event.dtend.value;
           events.push({
             id: i,
             title: event.summary.value,
-            start: event.dtstart.value,
-            end: event.dtend.value,
+            start: start,
+            end: end,
             isAllDay: isAllDay,
             body: event.description.value,
             calendarId: '1',
@@ -87,7 +88,7 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
         >
           {title}
         </Heading>
-        <Button colorScheme='yellow' onClick={() => window.open(gCalOutlookLink, '_blank')}>
+        <Button bg='yellow.500' _hover={{ bg: 'yellow.600' }} color='white' onClick={() => window.open(gCalOutlookLink, '_blank')}>
           Download {term} {year} (ics)
         </Button>
       </Flex>
@@ -162,6 +163,15 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
         taskView={false}
         scheduleView={['time']}
         ref={ref}
+        timezone={{
+          zones: [
+            {
+              timezoneName: 'America/New_York',
+              displayLabel: 'Eastern Time',
+              tooltip: 'Eastern Time'
+            }
+          ]
+        }}
       />
 
 
