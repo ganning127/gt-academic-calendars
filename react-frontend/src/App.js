@@ -56,6 +56,11 @@ function App() {
             ))
           }
         </SimpleGrid>
+
+        <CalendarCard
+          title="Combined"
+          webAppLink={[WebFall2024Ics, WebSpring2025Ics]}
+        />
       </Container>
     </ChakraProvider>
   );

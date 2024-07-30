@@ -14,12 +14,12 @@ import '@toast-ui/calendar/dist/toastui-calendar.min.css';
 import ical from "cal-parser";
 import { createRef, useEffect, useState } from 'react';
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
-import moment from 'moment-timezone';
 
 export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term }) => {
   const [initialEvents, setInitialEvents] = useState([]);
   const [dateRange, setDateRange] = useState('');
   const [calView, setCalView] = useState('month');
+  const [calendars, setCalendars] = useState([]);
   const ref = createRef();
 
   const displayRange = () => {
@@ -44,37 +44,91 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
   }, [calView]);
 
   useEffect(() => {
-    console.log(webAppLink);
-    fetch(webAppLink)
-      .then(r => r.text())
-      .then(text => {
+
+    let colorMapper = {
+      'fall2024': {
+        backgroundColor: '#BEE3F8',
+        borderColor: '#4299E1',
+      },
+      'spring2025': {
+        backgroundColor: '#E9D8FD',
+        borderColor: '#9F7AEA',
+      }
+    };
+
+    async function handleElse() {
+      let events = [];
+      let theCalendars = [];
+
+      for (let i = 0; i < webAppLink.length; i++) {
+        const resp = await fetch(webAppLink[i]);
+        const text = await resp.text();
+
         const parsed = ical.parseString(text);
-        console.log(parsed);
+        const calId = parsed.calendarData.name;
 
-        let events = [];
+        let calEvents = handleSingle(parsed, calId);
 
-        for (let i = 0; i < parsed.events.length; i++) {
-          const event = parsed.events[i];
-          const isAllDay = event["x-microsoft-cdo-alldayevent"]?.value === "TRUE" || event["x-microsoft-msncalendar-alldayevent"]?.value === "TRUE";
+        theCalendars.push({
+          id: calId,
+          name: calId,
+          backgroundColor: colorMapper[calId].backgroundColor,
+          borderColor: colorMapper[calId].borderColor
+        });
 
-          let start = event.dtstart.value;
+        events = events.concat(calEvents);
+      }
 
-          let end = event.dtend.value;
-          events.push({
-            id: i,
-            title: event.summary.value,
-            start: start,
-            end: end,
-            isAllDay: isAllDay,
-            body: event.description.value,
-            calendarId: '1',
-            category: isAllDay ? 'allday' : 'time'
-          });
-        }
+      setInitialEvents(events);
+      setCalendars(theCalendars);
+    }
 
-        setInitialEvents(events);
-        displayRange();
-      });
+    function handleSingle(parsed, calId = null) {
+      let events = [];
+      for (let i = 0; i < parsed.events.length; i++) {
+        const event = parsed.events[i];
+        const isAllDay = event["x-microsoft-cdo-alldayevent"]?.value === "TRUE" || event["x-microsoft-msncalendar-alldayevent"]?.value === "TRUE";
+
+        let start = event.dtstart.value;
+        let end = event.dtend.value;
+        events.push({
+          id: i,
+          title: event.summary.value,
+          start: start,
+          end: end,
+          isAllDay: isAllDay,
+          body: event.description.value,
+          calendarId: '1',
+          category: isAllDay ? 'allday' : 'time',
+          calendarId: calId ? calId : undefined
+        });
+      }
+
+      return events;
+    }
+
+    // if webappLink is a string
+    if (typeof webAppLink === 'string') {
+      fetch(webAppLink)
+        .then(r => r.text())
+        .then(text => {
+          const parsed = ical.parseString(text);
+          let calId = parsed.calendarData.name;
+          let events = handleSingle(parsed, calId);
+          setInitialEvents(events);
+          setCalendars([{
+            id: calId,
+            name: calId,
+            backgroundColor: colorMapper[calId].backgroundColor,
+            borderColor: colorMapper[calId].borderColor
+          }]);
+          displayRange();
+        });
+    } else {
+      handleElse();
+    }
+
+
   }, []);
 
   // https://github.com/nhn/tui.calendar/blob/main/apps/react-calendar/docs/en/guide/getting-started.md
@@ -88,9 +142,11 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
         >
           {title}
         </Heading>
-        <Button bg='yellow.500' _hover={{ bg: 'yellow.600' }} color='white' onClick={() => window.open(gCalOutlookLink, '_blank')}>
-          Download {term} {year} (ics)
-        </Button>
+        {
+          gCalOutlookLink &&
+          <Button bg='yellow.500' _hover={{ bg: 'yellow.600' }} color='white' onClick={() => window.open(gCalOutlookLink, '_blank')}>
+            Download {term} {year} (ics)
+          </Button>}
       </Flex>
 
 
@@ -102,8 +158,6 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
         </Text>
 
         <HStack gap={1}>
-
-
           <IconButton
             variant='outline'
             size='sm'
@@ -141,7 +195,6 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
             Today
           </Button>
 
-
           <Select
             size='sm'
             rounded='md'
@@ -160,7 +213,12 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
         isReadOnly={true}
         events={initialEvents}
         useDetailPopup={true}
-        taskView={false}
+        week={{
+          taskView: false,
+        }}
+        day={{
+          taskView: false,
+        }}
         scheduleView={['time']}
         ref={ref}
         timezone={{
@@ -172,6 +230,7 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
             }
           ]
         }}
+        calendars={calendars}
       />
 
 

@@ -56,7 +56,9 @@ const makeDir = (dir) => {
 };
 
 const getIcsFile = (dataObject, type) => {
-  const calendar = ical(); // init inside function to avoid reusing the same object
+  const calendar = ical({
+    name: toGenerateKey
+  }); // init inside function to avoid reusing the same object
 
   for (let i = 0; i < dataObject.length; i++) {
     const event = dataObject[i];
