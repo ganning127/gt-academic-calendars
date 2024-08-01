@@ -14,8 +14,29 @@ import '@toast-ui/calendar/dist/toastui-calendar.min.css';
 import ical from "cal-parser";
 import { createRef, useEffect, useState } from 'react';
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
+import { format, isSameDay } from 'date-fns';
 
-export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term }) => {
+import "./CalendarCard.css";
+
+
+
+let colorMapper = {
+  'fall2024': {
+    backgroundColor: '#BEE3F8',
+    borderColor: '#4299E1',
+  },
+  'spring2025': {
+    backgroundColor: '#E9D8FD',
+    borderColor: '#9F7AEA',
+  }
+};
+
+const indexToMonth = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term }, props) => {
   const [initialEvents, setInitialEvents] = useState([]);
   const [dateRange, setDateRange] = useState('');
   const [calView, setCalView] = useState('month');
@@ -29,10 +50,13 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
     const calendarInstance = ref.current.getInstance();
     const range = calendarInstance.getDateRangeStart();
     const rangeEnd = calendarInstance.getDateRangeEnd();
-    const formattedRange = `${range.getMonth() + 1}/${range.getDate()}/${range.getFullYear()} - ${rangeEnd.getMonth() + 1}/${rangeEnd.getDate()}/${rangeEnd.getFullYear()}`;
 
+    let month = calendarInstance.store.getState("month").view.renderDate.d.getMonth();
+    month = indexToMonth[month];
 
-    setDateRange(formattedRange);
+    let year = calendarInstance.store.getState("month").view.renderDate.d.getFullYear();
+
+    setDateRange(`${month} ${year}`);
   };
 
   useEffect(() => {
@@ -45,16 +69,6 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
 
   useEffect(() => {
 
-    let colorMapper = {
-      'fall2024': {
-        backgroundColor: '#BEE3F8',
-        borderColor: '#4299E1',
-      },
-      'spring2025': {
-        backgroundColor: '#E9D8FD',
-        borderColor: '#9F7AEA',
-      }
-    };
 
     async function handleElse() {
       let events = [];
@@ -98,7 +112,6 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
           end: end,
           isAllDay: isAllDay,
           body: event.description.value,
-          calendarId: '1',
           category: isAllDay ? 'allday' : 'time',
           calendarId: calId ? calId : undefined
         });
@@ -131,6 +144,7 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
 
   }, []);
 
+
   // https://github.com/nhn/tui.calendar/blob/main/apps/react-calendar/docs/en/guide/getting-started.md
 
   return (
@@ -150,8 +164,8 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
       </Flex>
 
 
-      <Flex justify='space-between'>
-        <Text>
+      <Flex justify='space-between' align='center'>
+        <Text fontSize='md' bg={colorMapper[`${term + year}`.toLowerCase()]?.backgroundColor} px={2} rounded='md'>
           {
             dateRange
           }
@@ -210,14 +224,20 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
       </Flex>
 
       <Calendar
+        height='750px'
         isReadOnly={true}
         events={initialEvents}
         useDetailPopup={true}
-        week={{
-          taskView: false,
-        }}
+        useCreationPopup={false}
         day={{
           taskView: false,
+        }}
+        week={{
+          taskView: false,
+          narrowWeekend: true
+        }}
+        month={{
+          narrowWeekend: true,
         }}
         scheduleView={['time']}
         ref={ref}
@@ -231,9 +251,27 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term })
           ]
         }}
         calendars={calendars}
+
+        template={{
+          popupDetailDate: ({ isAllday, start, end }) => {
+            const startDate = format(new Date(start), 'MM/dd/yyyy');
+            const endDate = format(new Date(end), 'MM/dd/yyyy');
+            const startTime = format(new Date(start), 'hh:mm a');
+            const endTime = format(new Date(end), 'hh:mm a');
+
+            if (isAllday) {
+              return `${startDate} - ${endDate}`;
+            } else if (isSameDay(new Date(start), new Date(end))) {
+              return `${startDate} • ${startTime} - ${endTime}`;
+            } else {
+              return `${startDate} ${startTime} - ${endDate} ${endTime}`;
+            }
+          }
+
+        }}
       />
 
 
-    </Stack>
+    </Stack >
   );
-};
+};;

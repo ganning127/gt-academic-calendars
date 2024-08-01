@@ -12,18 +12,16 @@ import GCalOutlookFall2024Ics from './assets/fall2024/calendar-fall-2024.ics';
 import WebSpring2025Ics from './assets/spring2025/webapp-spring-2025.ics';
 import GCalOutlookSpring2025Ics from './assets/spring2025/calendar-spring-2025.ics';
 
-
-
 const calendarsToRender = [
   {
-    title: "Fall 2024 Academic Calendar",
+    title: "Fall 2024",
     year: "2024",
     term: "Fall",
     webAppLink: WebFall2024Ics,
     gCalOutlookLink: GCalOutlookFall2024Ics,
   },
   {
-    title: "Spring 2025 Academic Calendar",
+    title: "Spring 2025",
     year: "2025",
     term: "Spring",
     webAppLink: WebSpring2025Ics,
@@ -34,7 +32,7 @@ const calendarsToRender = [
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <Container maxW="container.2xl" p={4}>
+      <Container maxW="container.2xl" p={4} mx='auto'>
         <Heading>
           Georgia Tech Academic Calendars
         </Heading>
@@ -42,7 +40,8 @@ function App() {
           Source code is available <Link color='yellow.600' href="https://github.com/ganning127/gt-academic-calendars" target="_blank">on my GitHub</Link>.
         </Text>
 
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>
+
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} mb={5}>
           {
             calendarsToRender.map((calendar) => (
               <CalendarCard
@@ -57,10 +56,13 @@ function App() {
           }
         </SimpleGrid>
 
+
         <CalendarCard
-          title="Combined"
+          title="Combined (fall 2024 + spring 2025)"
           webAppLink={[WebFall2024Ics, WebSpring2025Ics]}
         />
+
+
       </Container>
     </ChakraProvider>
   );

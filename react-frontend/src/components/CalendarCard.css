@@ -1,0 +1,15 @@
+.toastui-calendar-section-button {
+    display: none !important;
+}
+
+.toastui-calendar-popup-section {
+    font-weight: normal;
+}
+
+.toastui-calendar-ic-user-b {
+    display: none !important;
+}
+
+.toastui-calendar-weekday-grid-date-decorator {
+    background-color: #D69E2E !important;
+}
