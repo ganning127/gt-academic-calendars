@@ -5,7 +5,9 @@ import {
   Container,
   Heading, SimpleGrid,
   UnorderedList,
-  ListItem
+  ListItem,
+  Divider,
+  Box
 } from '@chakra-ui/react';
 import { CalendarCard } from './components/CalendarCard';
 
@@ -42,7 +44,7 @@ function App() {
           <UnorderedList ml={8}>
             <ListItem>
               <Text>
-                <Text as='span' fontWeight='bold'>What: </Text> An easy to view and export academic calendar for Georgia Tech. <Text as='span' textDecor='underline'>Currently, Fall 2024 and Spring 2025 are available.</Text>
+                <Text as='span' fontWeight='bold'>What: </Text> Easy to view and export academic calendar for Georgia Tech. <Text as='span' textDecor='underline'>Fall 2024 and Spring 2025 are currently available.</Text> All times shown on this site are in ET, but calendar exports (.ics) will adapt to your calendar&apos;s timezone.
               </Text>
             </ListItem>
 
@@ -54,7 +56,7 @@ function App() {
 
             <ListItem>
               <Text>
-                <Text as='span' fontWeight='bold'>How?</Text> All data is pulled from the <Link color='yellow.600' href="https://registrar.gatech.edu/calendar/" target="_blank">registrar&apos;s academic calendar</Link>.           Source code is available <Link color='yellow.600' href="https://github.com/ganning127/gt-academic-calendars" target="_blank">on my GitHub</Link>.
+                <Text as='span' fontWeight='bold'>How: </Text> All data is pulled from the <Link color='yellow.600' href="https://registrar.gatech.edu/calendar/" target="_blank">registrar&apos;s academic calendar</Link>.           Source code is available <Link color='yellow.600' href="https://github.com/ganning127/gt-academic-calendars" target="_blank">on my GitHub</Link>.
 
               </Text>
             </ListItem>
