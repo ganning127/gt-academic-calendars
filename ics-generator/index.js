@@ -15,7 +15,7 @@ const data = {
   }
 };
 
-const toGenerateKey = "spring2025";
+const toGenerateKey = "fall2024";
 const FILE_TSV = data[toGenerateKey].tsv;
 const FILE_NAME = data[toGenerateKey].name;
 const DEST_DIR = `../react-frontend/src/assets/${toGenerateKey}`;

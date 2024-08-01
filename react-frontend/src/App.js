@@ -3,7 +3,9 @@ import {
   ChakraProvider, Text,
   Link, theme,
   Container,
-  Heading, SimpleGrid
+  Heading, SimpleGrid,
+  UnorderedList,
+  ListItem
 } from '@chakra-ui/react';
 import { CalendarCard } from './components/CalendarCard';
 
@@ -36,8 +38,29 @@ function App() {
         <Heading>
           Georgia Tech Academic Calendars
         </Heading>
-        <Text fontSize='md' mt={2} mb={4}>All data is pulled from the <Link color='yellow.600' href="https://registrar.gatech.edu/calendar/" target="_blank">registrar&apos;s academic calendar</Link>.
-          Source code is available <Link color='yellow.600' href="https://github.com/ganning127/gt-academic-calendars" target="_blank">on my GitHub</Link>.
+        <Text fontSize='md' mt={2} mb={4}>
+          <UnorderedList ml={8}>
+            <ListItem>
+              <Text>
+                <Text as='span' fontWeight='bold'>What: </Text> An easy to view and export academic calendar for Georgia Tech. <Text as='span' textDecor='underline'>Currently, Fall 2024 and Spring 2025 are available.</Text>
+              </Text>
+            </ListItem>
+
+            <ListItem>
+              <Text>
+                <Text as='span' fontWeight='bold'>Why: </Text> The academic calendar on the registrar's page is difficult to read and export.
+              </Text>
+            </ListItem>
+
+            <ListItem>
+              <Text>
+                <Text as='span' fontWeight='bold'>How?</Text> All data is pulled from the <Link color='yellow.600' href="https://registrar.gatech.edu/calendar/" target="_blank">registrar&apos;s academic calendar</Link>.           Source code is available <Link color='yellow.600' href="https://github.com/ganning127/gt-academic-calendars" target="_blank">on my GitHub</Link>.
+
+              </Text>
+            </ListItem>
+
+          </UnorderedList>
+
         </Text>
 
 
