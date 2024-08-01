@@ -7,7 +7,9 @@ import {
   UnorderedList,
   ListItem,
   Divider,
-  Box
+  Box,
+  Flex,
+  Img
 } from '@chakra-ui/react';
 import { CalendarCard } from './components/CalendarCard';
 
@@ -15,6 +17,7 @@ import WebFall2024Ics from './assets/fall2024/webapp-fall-2024.ics';
 import GCalOutlookFall2024Ics from './assets/fall2024/calendar-fall-2024.ics';
 import WebSpring2025Ics from './assets/spring2025/webapp-spring-2025.ics';
 import GCalOutlookSpring2025Ics from './assets/spring2025/calendar-spring-2025.ics';
+import Logo from './assets/logo512.png';
 
 const calendarsToRender = [
   {
@@ -37,9 +40,12 @@ function App() {
   return (
     <ChakraProvider theme={theme}>
       <Container maxW="container.2xl" p={4} mx='auto'>
-        <Heading>
-          Georgia Tech Academic Calendars
-        </Heading>
+        <Flex gap={2}>
+          <Img src={Logo} alt="logo" w={12} h={12} />
+          <Heading>
+            Georgia Tech Academic Calendars
+          </Heading>
+        </Flex>
         <Text fontSize='md' mt={2} mb={4}>
           <UnorderedList ml={8}>
             <ListItem>
