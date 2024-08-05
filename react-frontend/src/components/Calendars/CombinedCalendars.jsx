@@ -1,13 +1,17 @@
 import { CalendarCard } from '../CalendarCard';
-import WebFall2024Ics from '../../assets/fall2024/webapp-fall-2024.ics';
-import WebSpring2025Ics from '../../assets/spring2025/webapp-spring-2025.ics';
+import { CALENDARS_MAP } from '../../lib/constants';
 
 const CombinedCalendars = () => {
+  let webAppLinks = [];
+  for (const key in CALENDARS_MAP) {
+    webAppLinks.push(CALENDARS_MAP[key].webAppLink);
+  }
+
   return (
     <>
       <CalendarCard
         title="Combined (fall 2024 + spring 2025)"
-        webAppLink={[WebFall2024Ics, WebSpring2025Ics]}
+        webAppLink={webAppLinks}
       />
     </>
   );

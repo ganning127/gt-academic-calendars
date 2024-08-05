@@ -16,6 +16,7 @@ import Logo from '../assets/logo512.png';
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { CALENDARS_MAP } from '../lib/constants';
 
 const variants = {
   init: {
@@ -52,20 +53,19 @@ const NavList = (props) => (
   <MotionList opacity="0" initial="init" variants={variants} {...props} />
 );
 
-const links = [
-  {
-    title: "Fall 2024",
-    link: "/calendars/fall2024"
-  },
-  {
-    title: "Spring 2025",
-    link: "/calendars/spring2025"
-  },
-  {
-    title: "Combined",
-    link: "/combined"
-  }
-];
+const links = [];
+
+for (const key in CALENDARS_MAP) {
+  links.push({
+    title: CALENDARS_MAP[key].title,
+    link: `/calendars/${key}`
+  });
+}
+
+links.push({
+  title: 'Combined',
+  link: '/calendars/combined'
+});
 
 
 
@@ -98,7 +98,10 @@ export const NavBar = () => {
         <Link to='/'>
           <Flex gap={2} align='center'>
             <Img src={Logo} alt="logo" w={12} h={12} />
-            <Heading size='lg'>
+            <Heading size={{
+              base: 'md',
+              md: 'lg'
+            }}>
               Georgia Tech Academic Calendars
             </Heading>
           </Flex>
