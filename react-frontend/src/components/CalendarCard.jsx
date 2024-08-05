@@ -148,19 +148,20 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term },
   // https://github.com/nhn/tui.calendar/blob/main/apps/react-calendar/docs/en/guide/getting-started.md
 
   return (
-    <Stack fontSize="xl" p={4} rounded='md' border='1px solid #d3d3d3' spacing={4}>
+    <Stack p={4} rounded='md' border='1px solid #d3d3d3' spacing={4}>
       <Flex justify='space-between' align='center'>
         <Heading
-          fontSize="3xl"
+          fontSize="2xl"
           color="yellow.500"
         >
           {title}
         </Heading>
         {
           gCalOutlookLink &&
-          <Button bg='yellow.500' _hover={{ bg: 'yellow.600' }} color='white' onClick={() => window.open(gCalOutlookLink, '_blank')}>
+          <Button bg='yellow.500' _hover={{ bg: 'yellow.600' }} size='sm' color='white' onClick={() => window.open(gCalOutlookLink, '_blank')}>
             Download {term} {year} (ics)
-          </Button>}
+          </Button>
+        }
       </Flex>
 
 
