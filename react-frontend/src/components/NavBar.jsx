@@ -1,11 +1,56 @@
 import React from 'react';
 import {
-  Text, Heading, Flex,
+  Text,
+  Heading,
+  Flex,
   Img,
-  Spacer
+  Spacer,
+  Box,
+  useDisclosure,
+  Center,
+  Stack,
+  StackDivider,
+  chakra
 } from '@chakra-ui/react';
 import Logo from '../assets/logo512.png';
+import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { Link, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
+
+const variants = {
+  init: {
+    opacity: 0,
+    y: -4,
+    display: 'none',
+    transition: {
+      duration: 0,
+    },
+  },
+  enter: {
+    opacity: 1,
+    y: 0,
+    display: 'block',
+    transition: {
+      duration: 0.15,
+      staggerChildren: 0.1,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -4,
+    transition: {
+      duration: 0.1,
+    },
+    transitionEnd: {
+      display: 'none',
+    },
+  },
+};
+
+const MotionList = motion(chakra.ul);
+const NavList = (props) => (
+  <MotionList opacity="0" initial="init" variants={variants} {...props} />
+);
 
 const links = [
   {
@@ -21,6 +66,8 @@ const links = [
     link: "/combined"
   }
 ];
+
+
 
 const NavLink = ({ title, link, isActive }) => {
   if (isActive) {
@@ -44,13 +91,14 @@ const NavLink = ({ title, link, isActive }) => {
 
 export const NavBar = () => {
   const location = useLocation();
+  const { isOpen, onToggle } = useDisclosure();
   return (
     <>
       <Flex align='center' p={2}>
         <Link to='/'>
           <Flex gap={2} align='center'>
             <Img src={Logo} alt="logo" w={12} h={12} />
-            <Heading>
+            <Heading size='lg'>
               Georgia Tech Academic Calendars
             </Heading>
           </Flex>
@@ -58,7 +106,46 @@ export const NavBar = () => {
 
         <Spacer />
 
-        <Flex gap={4}>
+        <Box display={{
+          base: 'block',
+          md: 'none'
+        }}>
+          <Center as="button" p="2" fontSize="2xl" onClick={onToggle} color="black">
+            {isOpen ? <HiX /> : <HiOutlineMenu />}
+          </Center>
+          <NavList
+            pos="absolute"
+            insetX="0"
+            bg='white'
+            top="64px"
+            animate={isOpen ? "enter" : "exit"}
+            shadow='xl'
+            px={2}
+            pb={4}
+          >
+            <Stack divider={<StackDivider borderColor="gray.200" />} spacing={2}>
+              {
+                links.map((link) => {
+                  const isActive = location.pathname === link.link;
+                  return (
+                    <NavLink
+                      key={link.title}
+                      title={link.title}
+                      link={link.link}
+                      isActive={isActive}
+                    />
+                  );
+                })
+              }
+            </Stack>
+          </NavList>
+
+        </Box>
+
+        <Flex gap={4} display={{
+          base: 'none',
+          md: 'flex'
+        }}>
           {
             links.map((link) => {
               const isActive = location.pathname === link.link;
