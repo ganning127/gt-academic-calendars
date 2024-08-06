@@ -38,7 +38,7 @@ function App() {
 
           <ListItem>
             <Text>
-              <Text as='span' fontWeight='bold'>Why: </Text> The academic calendar on the registrar's page is difficult to read and export.
+              <Text as='span' fontWeight='bold'>Why: </Text> A better and more intuitive way to browse the registrar&apos;s academic calendar.
             </Text>
           </ListItem>
 
