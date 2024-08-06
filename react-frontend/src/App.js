@@ -52,10 +52,6 @@ function App() {
 
         <Main />
 
-        {/* <CalendarCard
-        title="Combined (fall 2024 + spring 2025)"
-        webAppLink={[WebFall2024Ics, WebSpring2025Ics]}
-      /> */}
 
       </Container>
     </>
