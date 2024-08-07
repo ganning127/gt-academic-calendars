@@ -56,7 +56,7 @@ export const CALENDARS_MAP = {
         link: GCalOutlookSummer2024MayIcs
       }
     ],
-    show: true
+    show: false
   },
   "fall2024": {
     title: "Fall 2024",
