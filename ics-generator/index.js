@@ -5,6 +5,10 @@ import fs from 'fs';
 import path from 'path';
 
 const data = {
+  "summer2024": {
+    "tsv": "https://ro-blob.azureedge.net/ro-calendar-data/public/txt/202405.txt",
+    "name": "summer-2024.ics"
+  },
   "fall2024": {
     "tsv": "https://ro-blob.azureedge.net/ro-calendar-data/public/txt/202408.txt",
     "name": "fall-2024.ics"
@@ -15,7 +19,7 @@ const data = {
   }
 };
 
-const toGenerateKey = "fall2024";
+const toGenerateKey = "spring2025";
 const FILE_TSV = data[toGenerateKey].tsv;
 const FILE_NAME = data[toGenerateKey].name;
 const DEST_DIR = `../react-frontend/src/assets/${toGenerateKey}`;
@@ -55,9 +59,9 @@ const makeDir = (dir) => {
   }
 };
 
-const getIcsFile = (dataObject, type) => {
+const getIcsFile = (dataObject, type, calendarName = "") => {
   const calendar = ical({
-    name: toGenerateKey
+    name: calendarName || toGenerateKey
   }); // init inside function to avoid reusing the same object
 
   for (let i = 0; i < dataObject.length; i++) {
@@ -91,7 +95,7 @@ const getIcsFile = (dataObject, type) => {
       end: endDate,
       allDay: isAllDay,
       summary: event.Title,
-      description: !valueIsBlank(event.Description) ? event.Description : '',
+      description: !valueIsBlank(event.Body) ? event.Body : '',
       location: !valueIsBlank(event.Location) ? event.Location : '',
       url: !valueIsBlank(event.Link) ? event.Link : '',
       method: ICalCalendarMethod.PUBLISH,
@@ -105,13 +109,44 @@ const main = async () => {
   const tsvData = await getTsvFile();
   const obj = TSV.parse(tsvData);
 
-  for (let i = 0; i < GENERATE_KEYS.length; i++) {
-    const gen = GENERATE_KEYS[i].type;
-    const ics = getIcsFile(obj, gen);
+  console.log("object", obj);
 
-    makeDir(DEST_DIR);
-    fs.writeFileSync(path.join(DEST_DIR, gen + '-' + FILE_NAME), ics);
+
+  if (toGenerateKey.includes("summer")) {
+    // group objects into array based on TermPart key
+    let grouped = obj.reduce((r, a) => {
+      r[a.TermPart] = [...r[a.TermPart] || [], a];
+      return r;
+    }, {});
+
+    console.log("grouped", Object.keys(grouped));
+    for (let i = 0; i < GENERATE_KEYS.length; i++) {
+      for (const key in grouped) {
+        if (!key || key === 'undefined') {
+          continue;
+        }
+        const gen = GENERATE_KEYS[i].type;
+        const ics = getIcsFile(grouped[key], gen, key);
+
+        makeDir(DEST_DIR);
+        fs.writeFileSync(path.join(DEST_DIR, gen + '-' + key + '-' + FILE_NAME), ics);
+
+        console.log(`Generated ${gen} ics file for ${key}`);
+      }
+    }
+  } else {
+    for (let i = 0; i < GENERATE_KEYS.length; i++) {
+      const gen = GENERATE_KEYS[i].type;
+      const ics = getIcsFile(obj, gen);
+
+      makeDir(DEST_DIR);
+      fs.writeFileSync(path.join(DEST_DIR, gen + '-' + FILE_NAME), ics);
+
+      console.log(`Generated ${gen} ics file`);
+    }
   }
+
+
 };
 
 main();

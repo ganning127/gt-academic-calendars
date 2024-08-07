@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { CalendarCard } from '../CalendarCard';
-import { CALENDARS_MAP } from '../../lib/constants';
+import { ACTIVE_CALENDARS_MAP } from '../../lib/constants';
 
 
 const CalendarsRender = () => {
@@ -11,10 +11,11 @@ const CalendarsRender = () => {
 
   }, [term]);
 
-  if (!CALENDARS_MAP[term]) {
+  if (!ACTIVE_CALENDARS_MAP[term]) {
     return <div>Calendar not found.</div>;
   }
-  const calendar = CALENDARS_MAP[term];
+  const calendar = ACTIVE_CALENDARS_MAP[term];
+
   return (
     <>
       <CalendarCard

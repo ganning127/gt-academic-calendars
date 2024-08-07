@@ -1,5 +1,6 @@
 
 import {
+  Box,
   Heading,
   Stack,
   Button,
@@ -7,7 +8,8 @@ import {
   HStack,
   Flex,
   IconButton,
-  Select
+  Select, Checkbox,
+  Spacer
 } from '@chakra-ui/react';
 import Calendar from '@toast-ui/react-calendar';
 import '@toast-ui/calendar/dist/toastui-calendar.min.css';
@@ -15,21 +17,9 @@ import ical from "cal-parser";
 import { createRef, useEffect, useState } from 'react';
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import { format, isSameDay } from 'date-fns';
+import { colorMapper } from '../lib/constants';
 
 import "./CalendarCard.css";
-
-
-
-let colorMapper = {
-  'fall2024': {
-    backgroundColor: '#BEE3F8',
-    borderColor: '#4299E1',
-  },
-  'spring2025': {
-    backgroundColor: '#E9D8FD',
-    borderColor: '#9F7AEA',
-  }
-};
 
 const indexToMonth = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -41,6 +31,7 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term },
   const [dateRange, setDateRange] = useState('');
   const [calView, setCalView] = useState('month');
   const [calendars, setCalendars] = useState([]);
+  const [containsSummer, setContainsSummer] = useState(false);
   const ref = createRef();
 
   const displayRange = () => {
@@ -48,9 +39,6 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term },
       return;
     }
     const calendarInstance = ref.current.getInstance();
-    const range = calendarInstance.getDateRangeStart();
-    const rangeEnd = calendarInstance.getDateRangeEnd();
-
     let month = calendarInstance.store.getState("month").view.renderDate.d.getMonth();
     month = indexToMonth[month];
 
@@ -68,14 +56,17 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term },
   }, [calView]);
 
   useEffect(() => {
-
-
     async function handleElse() {
       let events = [];
       let theCalendars = [];
 
       for (let i = 0; i < webAppLink.length; i++) {
-        const resp = await fetch(webAppLink[i]);
+        if (webAppLink[i].title.toLowerCase().includes("summer")) {
+          setContainsSummer(true);
+          continue;
+        }
+
+        const resp = await fetch(webAppLink[i].link);
         const text = await resp.text();
 
         const parsed = ical.parseString(text);
@@ -140,29 +131,60 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term },
     } else {
       handleElse();
     }
-
-
   }, []);
 
-
+  const gcalOutlookIsString = typeof gCalOutlookLink === 'string';
   // https://github.com/nhn/tui.calendar/blob/main/apps/react-calendar/docs/en/guide/getting-started.md
 
   return (
     <Stack p={4} rounded='md' border='1px solid #d3d3d3' spacing={4}>
-      <Flex justify='space-between' align='center'>
-        <Heading
-          fontSize="2xl"
-          color="yellow.500"
-        >
-          {title}
-        </Heading>
+      <Flex align='center'>
+        <Box>
+          <Heading
+            fontSize="2xl"
+            color="yellow.500"
+          >
+            {title}
+          </Heading>
+          {
+            containsSummer &&
+            <Text size='sm' color='gray.500'>
+              *Summer calendars are not yet available in the combined view.
+            </Text>
+          }
+        </Box>
+
+        <Spacer />
+
         {
-          gCalOutlookLink &&
+          gCalOutlookLink && gcalOutlookIsString &&
           <Button bg='yellow.500' _hover={{ bg: 'yellow.600' }} size='sm' color='white' onClick={() => window.open(gCalOutlookLink, '_blank')}>
             Download {term} {year} (ics)
           </Button>
         }
-      </Flex>
+        {
+          gCalOutlookLink && !gcalOutlookIsString &&
+          <Stack direction='horizontal' flexWrap="wrap" justifyContent='flex-end'>
+            {
+              gCalOutlookLink.map((link, index) => {
+                return (
+                  <Button
+                    key={index}
+                    bg='yellow.500'
+                    _hover={{ bg: 'yellow.600' }}
+                    size='sm'
+                    color='white'
+                    onClick={() => window.open(link.link, '_blank')}
+                  >
+                    Download {link.title} (ics)
+                  </Button>
+                );
+              })
+            }
+          </Stack>
+        }
+
+      </Flex >
 
 
       <Flex justify='space-between' align='center'>
@@ -224,6 +246,32 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term },
         </HStack>
       </Flex>
 
+      <Stack spacing={5} direction='row'>
+        {
+          calendars.map((calendar, index) => {
+            const nameMapper = {
+              // All, Early, Late, May
+              'All': 'All Summer Sessions',
+              'Early': 'Early Short Summer',
+              'Late': 'Late Short Summer',
+              'May': 'Maymester'
+            };
+            return (
+              <Checkbox key={index} mt={2} defaultChecked onChange={(e) => {
+                const calendarInstance = ref?.current.getInstance();
+                calendarInstance.setCalendarVisibility(calendar.id, e.target.checked);
+              }}>
+                <Text fontSize='sm' fontWeight='bold' color={calendar.borderColor}>
+                  {nameMapper[calendar.name] || calendar.name}
+                </Text>
+              </Checkbox>
+            );
+          }
+          )
+        }
+
+      </Stack>
+
       <Calendar
         height='750px'
         isReadOnly={true}
@@ -267,8 +315,18 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term },
             } else {
               return `${startDate} ${startTime} - ${endDate} ${endTime}`;
             }
-          }
+          },
 
+          time(model) {
+            const { start, title } = model;
+
+            let startTime = format(new Date(start), 'hh:mm a');
+            if (startTime.charAt(0) === '0') {
+              startTime = startTime.slice(1);
+            }
+
+            return `${startTime} ${title}`;
+          },
         }}
       />
 

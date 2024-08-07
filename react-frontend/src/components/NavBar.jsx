@@ -16,7 +16,7 @@ import Logo from '../assets/logo512.png';
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CALENDARS_MAP } from '../lib/constants';
+import { ACTIVE_CALENDARS_MAP } from '../lib/constants';
 
 const variants = {
   init: {
@@ -55,9 +55,9 @@ const NavList = (props) => (
 
 const links = [];
 
-for (const key in CALENDARS_MAP) {
+for (const key in ACTIVE_CALENDARS_MAP) {
   links.push({
-    title: CALENDARS_MAP[key].title,
+    title: ACTIVE_CALENDARS_MAP[key].title,
     link: `/calendars/${key}`
   });
 }

@@ -38,14 +38,13 @@ function App() {
 
           <ListItem>
             <Text>
-              <Text as='span' fontWeight='bold'>Why: </Text> A better and more intuitive way to browse the registrar&apos;s academic calendar.
+              <Text as='span' fontWeight='bold'>Why: </Text> A better and more intuitive way to browse the Registrar&apos;s academic calendar.
             </Text>
           </ListItem>
 
           <ListItem>
             <Text>
-              <Text as='span' fontWeight='bold'>How: </Text> All data is pulled from the <Link href="https://registrar.gatech.edu/calendar/" >registrar&apos;s academic calendar</Link>.           Source code is available <Link href="https://github.com/ganning127/gt-academic-calendars">on my GitHub</Link>.
-
+              <Text as='span' fontWeight='bold'>How: </Text> All data is pulled from the <Link href="https://registrar.gatech.edu/calendar/">Registrar&apos;s academic calendar</Link>.           Source code is available <Link href="https://github.com/ganning127/gt-academic-calendars">on my GitHub</Link>.
             </Text>
           </ListItem>
         </UnorderedList>

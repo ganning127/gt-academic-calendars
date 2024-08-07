@@ -1,16 +1,21 @@
 import { CalendarCard } from '../CalendarCard';
-import { CALENDARS_MAP } from '../../lib/constants';
+import { ACTIVE_CALENDARS_MAP } from '../../lib/constants';
 
 const CombinedCalendars = () => {
   let webAppLinks = [];
-  for (const key in CALENDARS_MAP) {
-    webAppLinks.push(CALENDARS_MAP[key].webAppLink);
+  let titles = [];
+  for (const key in ACTIVE_CALENDARS_MAP) {
+    webAppLinks.push({
+      title: ACTIVE_CALENDARS_MAP[key].term + ' ' + ACTIVE_CALENDARS_MAP[key].year,
+      link: ACTIVE_CALENDARS_MAP[key].webAppLink
+    });
+    titles.push(ACTIVE_CALENDARS_MAP[key].term + ' ' + ACTIVE_CALENDARS_MAP[key].year);
   }
 
   return (
     <>
       <CalendarCard
-        title="Combined (fall 2024 + spring 2025)"
+        title={`Combined Calendars (${titles.join(', ')})`}
         webAppLink={webAppLinks}
       />
     </>

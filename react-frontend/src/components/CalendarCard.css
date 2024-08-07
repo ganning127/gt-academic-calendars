@@ -13,3 +13,11 @@
 .toastui-calendar-weekday-grid-date-decorator {
     background-color: #D69E2E !important;
 }
+
+.toastui-calendar-section-detail>div:nth-child(2) {
+    display: none !important;
+}
+
+.toastui-calendar-section-detail {
+    margin-bottom: 8px !important;
+}
