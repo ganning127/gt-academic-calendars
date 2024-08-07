@@ -10,6 +10,9 @@ import WebSummer2024LateIcs from '../assets/summer2024/webapp-Late-summer-2024.i
 import GCalOutlookSummer2024LateIcs from '../assets/summer2024/calendar-Late-summer-2024.ics';
 import WebSummer2024MayIcs from '../assets/summer2024/webapp-May-summer-2024.ics';
 import GCalOutlookSummer2024MayIcs from '../assets/summer2024/calendar-May-summer-2024.ics';
+import WebSummer2024FullIcs from '../assets/summer2024/webapp-Full-summer-2024.ics';
+import GCalOutlookSummer2024FullIcs from '../assets/summer2024/calendar-Full-summer-2024.ics';
+
 
 
 export const WEBAPP_TAG = "webapp";
@@ -36,6 +39,10 @@ export const CALENDARS_MAP = {
       {
         title: "May",
         link: WebSummer2024MayIcs
+      },
+      {
+        title: "Full",
+        link: WebSummer2024FullIcs
       }
     ],
     gCalOutlookLink: [
@@ -54,9 +61,13 @@ export const CALENDARS_MAP = {
       {
         title: "May",
         link: GCalOutlookSummer2024MayIcs
+      },
+      {
+        title: "Full",
+        link: GCalOutlookSummer2024FullIcs
       }
     ],
-    show: false
+    show: true
   },
   "fall2024": {
     title: "Fall 2024",
@@ -85,9 +96,14 @@ export const ACTIVE_CALENDARS_MAP = Object.keys(CALENDARS_MAP).reduce((acc, key)
 
 
 export const colorMapper = {
+
   'All': {
     backgroundColor: '#FED7D7',
     borderColor: '#E53E3E'
+  },
+  'Full': {
+    backgroundColor: '#a8edd4',
+    borderColor: '#0c704c',
   },
   'Early': {
     backgroundColor: '#FEEBC8',

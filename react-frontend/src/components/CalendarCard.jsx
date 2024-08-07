@@ -251,10 +251,11 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term },
           calendars.map((calendar, index) => {
             const nameMapper = {
               // All, Early, Late, May
-              'All': 'All Summer Sessions',
-              'Early': 'Early Short Summer',
-              'Late': 'Late Short Summer',
-              'May': 'Maymester'
+              // 'All': 'All Summer Sessions',
+              // 'Early': 'Early Short Summer',
+              // 'Late': 'Late Short Summer',
+              // 'May': 'Maymester',
+              // 'Full': 'Full Summer Session'
             };
             return (
               <Checkbox key={index} mt={2} defaultChecked onChange={(e) => {
