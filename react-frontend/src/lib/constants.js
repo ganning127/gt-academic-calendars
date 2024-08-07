@@ -107,7 +107,7 @@ export const colorMapper = {
   },
   'Early': {
     backgroundColor: '#FEEBC8',
-    borderColor: '#ED893'
+    borderColor: '#fcc560'
   },
   'Late': {
     backgroundColor: '#BEE3F8',
