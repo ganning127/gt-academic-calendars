@@ -93,7 +93,7 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term },
       for (let i = 0; i < parsed.events.length; i++) {
         const event = parsed.events[i];
         const isAllDay = event["x-microsoft-cdo-alldayevent"]?.value === "TRUE" || event["x-microsoft-msncalendar-alldayevent"]?.value === "TRUE";
-
+        console.log(event);
         let start = event.dtstart.value;
         let end = event.dtend.value;
         events.push({
@@ -120,6 +120,8 @@ export const CalendarCard = ({ title, webAppLink, gCalOutlookLink, year, term },
           let calId = parsed.calendarData.name;
           let events = handleSingle(parsed, calId);
           setInitialEvents(events);
+          console.log(calId);
+          console.log(colorMapper);
           setCalendars([{
             id: calId,
             name: calId,

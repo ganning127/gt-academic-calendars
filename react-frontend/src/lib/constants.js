@@ -12,7 +12,8 @@ import WebSummer2024MayIcs from '../assets/summer2024/webapp-May-summer-2024.ics
 import GCalOutlookSummer2024MayIcs from '../assets/summer2024/calendar-May-summer-2024.ics';
 import WebSummer2024FullIcs from '../assets/summer2024/webapp-Full-summer-2024.ics';
 import GCalOutlookSummer2024FullIcs from '../assets/summer2024/calendar-Full-summer-2024.ics';
-
+import WebFall2025Ics from '../assets/fall2025/webapp-fall-2025.ics';
+import GCalOutlookFall2025Ics from '../assets/fall2025/calendar-fall-2025.ics';
 
 
 export const WEBAPP_TAG = "webapp";
@@ -75,7 +76,7 @@ export const CALENDARS_MAP = {
     term: "Fall",
     webAppLink: WebFall2024Ics,
     gCalOutlookLink: GCalOutlookFall2024Ics,
-    show: true
+    show: false
   },
   "spring2025": {
     title: "Spring 2025",
@@ -83,8 +84,16 @@ export const CALENDARS_MAP = {
     term: "Spring",
     webAppLink: WebSpring2025Ics,
     gCalOutlookLink: GCalOutlookSpring2025Ics,
+    show: false
+  },
+  "fall2025": {
+    title: "Fall 2025",
+    year: "2025",
+    term: "Fall",
+    webAppLink: WebFall2025Ics,
+    gCalOutlookLink: GCalOutlookFall2025Ics,
     show: true
-  }
+  },
 };
 
 export const ACTIVE_CALENDARS_MAP = Object.keys(CALENDARS_MAP).reduce((acc, key) => {
@@ -96,7 +105,6 @@ export const ACTIVE_CALENDARS_MAP = Object.keys(CALENDARS_MAP).reduce((acc, key)
 
 
 export const colorMapper = {
-
   'All': {
     backgroundColor: '#FED7D7',
     borderColor: '#E53E3E'
@@ -128,7 +136,11 @@ export const colorMapper = {
   'spring2025': {
     backgroundColor: '#E9D8FD',
     borderColor: '#9F7AEA',
-  }
+  },
+  'fall2025': {
+    backgroundColor: '#BEE3F8',
+    borderColor: '#4299E1',
+  },
 };
 export const calNameIsSummer = (name) => {
   const summerContains = ["All", "Early", "Late", "May"];
